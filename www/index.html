@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>vzxtemple</title>
+<style>
+.container { 
+    display: flex;
+    flex-direction: column;
+    width: 768px;
+}
+</style>
+<script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>VZXTEMPLE</h1>
+<p>Welcome to the temple</p>
+
+<div id="pray-start" class="container">
+    <p>Send your wishes to ENKI</p>
+    <textarea id="pray-message"></textarea>
+    <div><button id="pray-submit">Submit</button></div>
+</div>
+<div id="pray-done" class="container">
+    <img src="" width="640" height="640" />
+    <p></p>
+</div>
+<script>
+$(function() {
+
+
+$('#pray-submit').on('click', function (e) {
+    let message = $('#pray-message').val();
+    $.ajax({ 
+        url: '/api/pray/', 
+        method: 'POST',
+        data: JSON.stringify({ message }),
+        contentType: "application/json",
+    }).done(function(data, textStatus, jqXHR) {
+        console.log(data);
+        showPrayerResponse(data);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(arguments);
+    })
+});
+
+function showPrayerResponse (data) {
+    $('#pray-done img').attr('src','data:image/png;base64,'+data.imageBase64);
+    $('#pray-done p').text(data.message);
+    $('#pray-done').show();
+}
+
+});
+</script>
+</body>
+</html>
