@@ -16,19 +16,54 @@
 <body>
 <h1>VZXTEMPLE</h1>
 <p>Welcome to the temple</p>
-
-<div id="pray-start" class="container">
-    <p>Send your wishes to ENKI</p>
+mwyCjy2UTTEGZQNDBu8xpdgxf1msEmgxZq
+<div id="pray-key" class="container">
+    <div><button id="button-get-key">New Key</button></div>
+    <input type="text" id="mint-address" />
+    <div><button id="button-check-balance">Balance</button></div>
+    <p id="mint-key-message"></p>
+</div>
+<div id="pray-send" class="container" style="display:none">
+    <p>Your offering was received.</p>
+    <p>Send your wishes to ENKI.</p>
     <textarea id="pray-message"></textarea>
     <div><button id="pray-submit">Submit</button></div>
 </div>
-<div id="pray-done" class="container">
+<div id="pray-done" class="container" style="display:none">
+    <p></p>
     <img src="" width="640" height="640" />
     <p></p>
 </div>
 <script>
 $(function() {
-
+$('#button-get-key').on('click', function (e) {
+    $.ajax({ 
+        url: '/api/mintkey/', 
+        method: 'POST',
+        data: JSON.stringify({}),
+        contentType: "application/json",
+    }).done(function(data, textStatus, jqXHR) {
+        $('#mint-address').val(data.mintAddress);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(arguments);
+    })
+})
+$('#button-check-balance').on('click', function (e) {
+    let addr = $('#mint-address').val();
+    $.ajax({ 
+        url: '/api/balance/', 
+        method: 'POST',
+        data: JSON.stringify({ mintAddress: addr }),
+        contentType: "application/json",
+    }).done(function(data, textStatus, jqXHR) {
+        $('#mint-key-message').text(data.balance.confirmed +', '+data.balance.unconfirmed);
+        if (data.balance.confirmed+data.balance.unconfirmed >= 10000) {
+            $('#pray-send').show();
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(arguments);
+    })
+})
 
 $('#pray-submit').on('click', function (e) {
     let message = $('#pray-message').val();
