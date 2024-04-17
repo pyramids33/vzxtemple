@@ -23,6 +23,10 @@ config.changeKey = bsv.PrivateKey.fromWIF(config.changeKey);
 config.changeAddress = config.changeKey.toAddress();
 
 const app = express();
+app.use((err, req, res, next) => {
+    res.status(500);
+    res.json({ error: 'An error occurred.' });
+});
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'www', 'index.html'));
