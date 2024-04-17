@@ -3,6 +3,7 @@ require('express-async-errors');
 const path = require('node:path');
 const { readFileSync } = require('node:fs');
 const { readFile } = require('node:fs/promises');
+const escapeHTML = require('escape-html');
 
 const { bsv, TestWallet } = require('scrypt-ts');
 const { OrdiProvider } = require('scrypt-ord');
@@ -76,14 +77,17 @@ async function (req, res) {
         <html>
         <head><title>vzxtemple</title></head>
         <body style="display:flex;flex-direction:column">
-        <p>${enkiMessage.replace(/[^a-z\s]/gi, '')}</p>
+        <p>${escapeHTML(enkiMessage)}</p>
         <img src="data:image/png;base64,${imageBase64}">
         </body>
         </html>
     `;
 
-    console.log('do mint');
+    console.log('do mint', run.id);
+    
     const { mintTx, xferTx } = await pray.mintOrdinal(mintKey, xferAddress, html, config);
+
+    console.log('mint done', mintTx.id, xferTx.id, run.id);
     
     res.status(200).json({ 
         id: run.id,
