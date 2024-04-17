@@ -11,13 +11,16 @@ const { readFileSync } = require('node:fs');
 
 const network = bsv.Networks.testnet;
 //const privKey = bsv.PrivateKey.fromRandom(network);
-//const privKey = bsv.PrivateKey.fromWIF('cSVXxqhzqyRKq4xT5c4zXGpP8EhY1557sbmeoKQrfEiqRocFPA5R');
-//const address = privKey.toAddress();
-//const publicKey = privKey.toPublicKey();
-//console.log(privKey.toString());
-//console.log(address.toString());
-//console.log(publicKey.toString());
+// const privKey = bsv.PrivateKey.fromWIF('cSVXxqhzqyRKq4xT5c4zXGpP8EhY1557sbmeoKQrfEiqRocFPA5R');
+// const address = privKey.toAddress();
+// const publicKey = privKey.toPublicKey();
+// console.log(privKey.toString());
+// console.log(address.toString());
+// console.log(publicKey.toString());
+// mint mwyCjy2UTTEGZQNDBu8xpdgxf1msEmgxZq
+// recv mka3MLuMnHVhFhUiGT3PfWs2FLb3mYCWpk
 
+/*
 const img = readFileSync('./data/run_RU7ErHzLkJNdSWP33k2a8sNi.jpg').toString('base64');
 
 // change key / address (default key in TestWallet)
@@ -61,3 +64,4 @@ async function main() {
 }
 
 main().catch(e => console.error(e.message));
+*/

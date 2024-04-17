@@ -6,6 +6,19 @@
     display: flex;
     flex-direction: column;
     width: 768px;
+    gap: .6em;
+}
+.row { 
+    display: flex;
+    flex-direction: row;
+    width: 768px;
+    gap: .6em;
+}
+h1,h4,ul, p { 
+    margin: 0;
+}
+textarea{
+    resize:none;
 }
 </style>
 <script
@@ -13,26 +26,49 @@
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="container">
 <h1>VZXTEMPLE</h1>
-<p>Welcome to the temple</p>
-mwyCjy2UTTEGZQNDBu8xpdgxf1msEmgxZq
+<p>welcome to the temple</p>
+<h4>step1. make an offering</h4>
+<ul>
+    <li>press new key to generate a mint address.</li>
+    <li>send 10000 sats to the mint address. </li>
+    <li>the server has the key. change will be donated to the temple.</li>
+    <li>click 'balance' to check and reveal step2.</li>
+</ul>
 <div id="pray-key" class="container">
-    <div><button id="button-get-key">New Key</button></div>
     <input type="text" id="mint-address" />
-    <div><button id="button-check-balance">Balance</button></div>
-    <p id="mint-key-message"></p>
+    <div>
+        <button id="button-get-key">New Key</button>
+        <button id="button-check-balance">Balance</button>
+    </div>
+    <p id="balance-text"></p>
 </div>
+<br>
 <div id="pray-send" class="container" style="display:none">
-    <p>Your offering was received.</p>
-    <p>Send your wishes to ENKI.</p>
-    <textarea id="pray-message"></textarea>
+    <h4>step2. pray to enki</h4>
+    <ul>
+        <li>your offering was received.</li>
+        <li>send your wishes (maximum 200 characters).</li>
+        <li>put in your own address to receive a 1sat ordinal nft.</li>
+        <li>response might take a minute...</li>
+    </ul>
+    <textarea id="pray-message" maxlength="200" rows="3"></textarea>
+    <div class="row">receive: <input type="text" id="xfer-address" style="display:block;"/></div>
     <div><button id="pray-submit">Submit</button></div>
 </div>
+<div id="pray-spinner" class="container" style="display:none">
+    <p>please wait...</p>
+    <img src="/static/hourglass.gif" width="64" height="64">
+</div>
 <div id="pray-done" class="container" style="display:none">
-    <p></p>
-    <img src="" width="640" height="640" />
-    <p></p>
+    <h4>step3. receive the light of divinity</h4>
+    <ul>
+        <li>your 1sat ordinal NFT may be a blessing or a curse...</li>
+    </ul>
+    <p class="minttx"></p>
+    <p class="xfertx"></p>
+    <iframe id="pray-response" src="javascript:void(0);" style="border:none;height:1000px;"></iframe>
 </div>
 <script>
 $(function() {
@@ -48,6 +84,9 @@ $('#button-get-key').on('click', function (e) {
         console.log(arguments);
     })
 })
+$('#mint-address').on('change', function (e) {
+    $('#button-check-balance').prop('disabled', $(this).val().length===0);
+});
 $('#button-check-balance').on('click', function (e) {
     let addr = $('#mint-address').val();
     $.ajax({ 
@@ -56,8 +95,8 @@ $('#button-check-balance').on('click', function (e) {
         data: JSON.stringify({ mintAddress: addr }),
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
-        $('#mint-key-message').text(data.balance.confirmed +', '+data.balance.unconfirmed);
-        if (data.balance.confirmed+data.balance.unconfirmed >= 10000) {
+        $('#balance-text').text('Balance: '+(data.balance.confirmed+data.balance.unconfirmed)+' of '+data.minimum);
+        if (data.funded) {
             $('#pray-send').show();
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -66,26 +105,29 @@ $('#button-check-balance').on('click', function (e) {
 })
 
 $('#pray-submit').on('click', function (e) {
-    let message = $('#pray-message').val();
+    const message = $('#pray-message').val();
+    const mintAddress = $('#mint-address').val();
+    const xferAddress = $('#xfer-address').val();
+    $('#pray-spinner').show();
     $.ajax({ 
         url: '/api/pray/', 
         method: 'POST',
-        data: JSON.stringify({ message }),
+        data: JSON.stringify({ message, mintAddress, xferAddress }),
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
         console.log(data);
-        showPrayerResponse(data);
+        $('#pray-spinner').hide();
+        $('#pray-response').contents().find('html').html(data.html);
+        $('#pray-done .minttx').text('Mint: '+data.mintTx);
+        $('#pray-done .xfertx').text('Transfer: '+data.xferTx);
+        $('#pray-done').show();
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.log(arguments);
     })
 });
 
-function showPrayerResponse (data) {
-    $('#pray-done img').attr('src','data:image/png;base64,'+data.imageBase64);
-    $('#pray-done p').text(data.message);
-    $('#pray-done').show();
-}
 
+$('#mint-address').trigger('change');
 });
 </script>
 </body>

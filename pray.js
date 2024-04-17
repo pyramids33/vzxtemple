@@ -145,7 +145,7 @@ async function generateImage(run, config) {
     return run;
 }
 
-async function mintOrdinal (mintKey, html, config) {
+async function mintOrdinal (mintKey, xferAddress, html, config) {
     const mintAddress = mintKey.toAddress();
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const p2pkh = new OrdiNFTP2PKH(Addr(mintAddress.toByteString()));

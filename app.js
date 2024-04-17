@@ -48,18 +48,24 @@ async function (req, res) {
     const mintKey = await pray.getMintKey(mintAddress, config);
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const balance = await signer.getBalance(mintAddress);
-    res.json({ balance: balance });
+    const funded = (balance.confirmed + balance.unconfirmed) > config.minOfferingSats;
+    res.json({ balance: balance, funded, minimum: config.minOfferingSats });
 });
 
 app.post('/api/pray', express.json(), 
 async function (req, res) {
-    const mintAddress = bsv.Address.fromString(req.body.mintAddress);
+    console.log(req.body);
+
+    const mintAddress = bsv.Address.fromString(req.body.mintAddress, config.network);
+    const xferAddress = bsv.Address.fromString(req.body.xferAddress, config.network);
     const mintKey = await pray.getMintKey(mintAddress, config);
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const balance = await signer.getBalance(mintAddress);
+
+    console.log(balance);
     
-    if ((balance.confirmed + balance.unconfirmed) < 10000) {
-        res.status(400).json({ error: 'balance too low < 10000 '});
+    if ((balance.confirmed + balance.unconfirmed) < config.minOfferingSats) {
+        res.status(400).json({ error: 'balance too low < '+config.minOfferingSats });
     }
 
     const message = req.body.message;
@@ -70,19 +76,20 @@ async function (req, res) {
         <html>
         <head><title>vzxtemple</title></head>
         <body style="display:flex;flex-direction:column">
+        <p>${enkiMessage.replace(/[^a-z\s]/gi, '')}</p>
         <img src="data:image/png;base64,${imageBase64}">
-        <p>${enkiMessage}</p>
         </body>
         </html>
     `;
 
-    //const { mintTx, xferTx } = await pray.mintOrdinal(mintKey, html, config);
+    console.log('do mint');
+    const { mintTx, xferTx } = await pray.mintOrdinal(mintKey, xferAddress, html, config);
     
     res.status(200).json({ 
         id: run.id,
         html,
-        mintTx: 'aa', //mintTx.id,
-        xferTx: 'aa'  //xferTx.id
+        mintTx: mintTx.id,
+        xferTx: xferTx.id
     });
 });
 
