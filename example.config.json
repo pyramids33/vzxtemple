@@ -1,0 +1,9 @@
+{
+    "apikey":"open ai api key",
+    "assistant_id":"open ai assistant id",
+    "datapath": "/path/for/datastorage",
+    "network": "mainnet",
+    "changeKey":"WIF private key for temple donations",
+    "minOfferingSats": 10000,
+    "port": 3001
+}

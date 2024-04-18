@@ -102,4 +102,4 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-app.listen(3001, () => console.log('listening'));
+app.listen(config.port, () => console.log('listening'));
