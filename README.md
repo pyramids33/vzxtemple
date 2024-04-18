@@ -2,8 +2,8 @@
 
 *by Tim Middleton*
 
-Demo Video: tba
-Hackathon Entry: tba
+Demo Video: tba  
+Hackathon Entry: tba  
 
 For this hackathon I created a digital temple. 
 It uses generative AI to simulate a theophany and records it as a 1sat ordinal on the BSV blockchain.  
