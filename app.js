@@ -23,10 +23,7 @@ config.changeKey = bsv.PrivateKey.fromWIF(config.changeKey);
 config.changeAddress = config.changeKey.toAddress();
 
 const app = express();
-app.use((err, req, res, next) => {
-    res.status(500);
-    res.json({ error: 'An error occurred.' });
-});
+
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'www', 'index.html'));
@@ -59,18 +56,16 @@ async function (req, res) {
 
 app.post('/api/pray', express.json(), 
 async function (req, res) {
-    console.log(req.body);
-
     const mintAddress = bsv.Address.fromString(req.body.mintAddress, config.network);
     const xferAddress = bsv.Address.fromString(req.body.xferAddress, config.network);
     const mintKey = await pray.getMintKey(mintAddress, config);
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const balance = await signer.getBalance(mintAddress);
 
-    console.log(balance);
+    console.log('balance', mintAddress.toString(), balance);
     
     if ((balance.confirmed + balance.unconfirmed) < config.minOfferingSats) {
-        res.status(400).json({ error: 'balance too low < '+config.minOfferingSats });
+        res.status(400).json({ error: 'balance too low < ' + config.minOfferingSats });
     }
 
     const message = req.body.message;
@@ -99,6 +94,12 @@ async function (req, res) {
         mintTx: mintTx.id,
         xferTx: xferTx.id
     });
+});
+
+app.use((err, req, res, next) => {
+    res.status(500);
+    res.send({ error: 'oops, an error occurred.' });
+    next(err);
 });
 
 app.listen(3001, () => console.log('listening'));

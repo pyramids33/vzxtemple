@@ -20,6 +20,9 @@ h1,h4,ul, p {
 textarea{
     resize:none;
 }
+.error {
+    color: red;
+}
 </style>
 <script
     src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -34,11 +37,12 @@ textarea{
     <li>press new key to generate a mint address.</li>
     <li>send 10000 sats to the mint address. </li>
     <li>the server has the key. change will be donated to the temple.</li>
+    <li>in case of error, the same address can be used again while it has balance.</li>
     <li>click 'balance' to check and reveal step2.</li>
 </ul>
 <div id="pray-key" class="container">
     <input type="text" id="mint-address" />
-    <div>
+    <div id="s1-buttons">
         <button id="button-get-key">New Key</button>
         <button id="button-check-balance">Balance</button>
     </div>
@@ -55,7 +59,8 @@ textarea{
     </ul>
     <textarea id="pray-message" maxlength="200" rows="3"></textarea>
     <div class="row">receive: <input type="text" id="xfer-address" style="width:100%"/></div>
-    <div><button id="pray-submit">Submit</button></div>
+    <div><button id="button-pray-submit">Submit</button></div>
+    <p id="pray-error"></p>
 </div>
 <div id="pray-spinner" class="container" style="display:none">
     <p>please wait...</p>
@@ -73,6 +78,9 @@ textarea{
 <script>
 $(function() {
 $('#button-get-key').on('click', function (e) {
+    $('#s1-buttons button').prop('disabled', true);
+    $('#balance-text').removeClass('error').text('').hide();
+
     $.ajax({ 
         url: '/api/mintkey/', 
         method: 'POST',
@@ -80,35 +88,46 @@ $('#button-get-key').on('click', function (e) {
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
         $('#mint-address').val(data.mintAddress);
+        $('#s1-buttons button').prop('disabled', false);
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(arguments);
+        const error = jqXHR?.responseJSON?.error||'oops, an error occurred';
+        $('#balance-text').text(error).addClass('error').show();
+        $('#s1-buttons button').prop('disabled', false);
     })
-})
-$('#mint-address').on('change', function (e) {
-    $('#button-check-balance').prop('disabled', $(this).val().length===0);
 });
+
 $('#button-check-balance').on('click', function (e) {
-    let addr = $('#mint-address').val();
+    $('#s1-buttons button').prop('disabled', true);
+    $('#balance-error').removeClass('error').text('').hide();
+
     $.ajax({ 
         url: '/api/balance/', 
         method: 'POST',
-        data: JSON.stringify({ mintAddress: addr }),
+        data: JSON.stringify({ mintAddress: $('#mint-address').val() }),
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
         $('#balance-text').text('Balance: '+(data.balance.confirmed+data.balance.unconfirmed)+' of '+data.minimum);
         if (data.funded) {
             $('#pray-send').show();
+        } else {
+            $('#s1-buttons button').prop('disabled', false);
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(arguments);
+        const error = jqXHR?.responseJSON?.error||'oops, an error occurred';
+        $('#s1-buttons button').prop('disabled', false);
+        $('#balance-text').text(error).addClass('error').show();
     })
 })
 
-$('#pray-submit').on('click', function (e) {
+$('#button-pray-submit').on('click', function (e) {
+    $('#button-pray-submit').prop('disabled', true);
+    $('#pray-error').removeClass('error').text('').hide();
+    $('#pray-spinner').show();
+
     const message = $('#pray-message').val();
     const mintAddress = $('#mint-address').val();
     const xferAddress = $('#xfer-address').val();
-    $('#pray-spinner').show();
+    
     $.ajax({ 
         url: '/api/pray/', 
         method: 'POST',
@@ -116,18 +135,19 @@ $('#pray-submit').on('click', function (e) {
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
         console.log(data);
+
         $('#pray-spinner').hide();
         $('#pray-response').contents().find('html').html(data.html);
         $('#pray-done .minttx').text('Mint: '+data.mintTx);
         $('#pray-done .xfertx').text('Transfer: '+data.xferTx);
         $('#pray-done').show();
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(arguments);
+        const error = jqXHR?.responseJSON?.error||'oops, an error occurred';
+        $('#button-pray-submit').prop('disabled', true);
+        $('#pray-error').addClass('error').text(error).show();
     })
 });
 
-
-$('#mint-address').trigger('change');
 });
 </script>
 </body>
