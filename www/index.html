@@ -98,7 +98,7 @@ $('#button-get-key').on('click', function (e) {
 
 $('#button-check-balance').on('click', function (e) {
     $('#s1-buttons button').prop('disabled', true);
-    $('#balance-error').removeClass('error').text('').hide();
+    $('#balance-text').removeClass('error').text('').hide();
 
     $.ajax({ 
         url: '/api/balance/', 
@@ -106,7 +106,7 @@ $('#button-check-balance').on('click', function (e) {
         data: JSON.stringify({ mintAddress: $('#mint-address').val() }),
         contentType: "application/json",
     }).done(function(data, textStatus, jqXHR) {
-        $('#balance-text').text('Balance: '+(data.balance.confirmed+data.balance.unconfirmed)+' of '+data.minimum);
+        $('#balance-text').text('Balance: '+(data.balance.confirmed+data.balance.unconfirmed)+' of '+data.minimum).show();
         if (data.funded) {
             $('#pray-send').show();
         } else {
