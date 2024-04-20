@@ -23,7 +23,7 @@ async function newMintKey (config) {
 }
 async function getMintKey (mintAddress, config) {
     const buf = await readFile(mintKeyPath(mintAddress,config));
-    const mintKey = bsv.PrivateKey.fromWIF(buf.toString());
+    const mintKey = bsv.PrivateKey.fromWIF(buf.toString().trim());
     return mintKey;
 }
 
@@ -150,7 +150,7 @@ async function mintOrdinal (mintKey, xferAddress, html, config) {
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const p2pkh = new OrdiNFTP2PKH(Addr(mintAddress.toByteString()));
     await p2pkh.connect(signer);
-    
+
     const mintTx = await p2pkh.inscribe({ content: html, contentType: ContentType.HTML });
 
     const receiver = new OrdiNFTP2PKH(Addr(xferAddress.toByteString()));
