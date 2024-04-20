@@ -2,7 +2,7 @@
 
 *by Tim Middleton*
 
-Demo Video: tba  
+Demo Video: [hackthon video](https://vimeo.com/936882508?share=copy)  
 Hackathon Entry: tba  
 
 For this hackathon I created a digital temple. 
