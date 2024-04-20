@@ -36,7 +36,7 @@ async function doRun (mintAddress, message, config) {
 
 async function saveRun (run, config) {
     await writeFile(
-        path.join(config.datapath, run.bsvAddress+'.json'), 
+        path.join(config.datapath, run.id+'.json'), 
         JSON.stringify(run, null, 2), 
         { flag: 'w' }
     );
@@ -139,7 +139,8 @@ async function generateImage(run, config) {
 
     run.imageGenerated = true;
     run.imagePath = imgPath;
-    run.imagePrompt = imgJSON.data[0].revised_prompt;
+    run.imagePrompt = prompt;
+    run.revisedPrompt = imgJSON.data[0].revised_prompt;
 
     await saveRun(run, config);
     return run;
