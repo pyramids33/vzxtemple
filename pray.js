@@ -207,7 +207,7 @@ async function mintOrdinal (mintKey, xferAddress, html, config) {
         {
             transfer: receiver,
             pubKeyOrAddrToSign: mintKey.toPublicKey(),
-            tokenChangeAddress: config.changeAddress
+            // tokenChangeAddress: config.changeAddress
         }
     );
 
