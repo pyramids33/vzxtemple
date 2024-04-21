@@ -2,7 +2,7 @@ const express = require('express');
 require('express-async-errors');
 const path = require('node:path');
 const { readFileSync } = require('node:fs');
-const { readFile } = require('node:fs/promises');
+const { readFile, rename } = require('node:fs/promises');
 const escapeHTML = require('escape-html');
 
 const { bsv, TestWallet } = require('scrypt-ts');
@@ -91,6 +91,11 @@ async function (req, res) {
 
     console.log('mint done', mintTx.id, xferTx.id, run.id);
     
+    rename(
+        pray.mintKeyPath(mintAddress,config), 
+        pray.mintKeyPath(mintAddress,config)+'_done'
+    ).catch((err)=>console.error(err))
+
     res.status(200).json({ 
         id: run.id,
         html,

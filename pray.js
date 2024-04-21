@@ -9,7 +9,7 @@ const {
     ContentType,
     OrdiNFTP2PKH,
     OrdiProvider,
-    OrdiMethodCallOptions,
+    OrdiMethodCallOptions
 } = require('scrypt-ord');
 
 function mintKeyPath (mintAddress,config) {
@@ -163,41 +163,41 @@ async function mintOrdinal (mintKey, xferAddress, html, config) {
     // Mostly copied from OrdinalNFT.getDefaultTxBuilder
     // Just wanted to update the changeAddress
     //
-    p2pkh.bindTxBuilder('unlock', async function (current, options, n) {
-        let changeAddress;
-        if (options.tokenChangeAddress) {
-            changeAddress = options.tokenChangeAddress;
-        } else {
-            changeAddress = await current.signer.getDefaultAddress();
-        }
-        const nexts = [];
-        const tx = new bsv.Transaction();
-        tx.addInput(current.buildContractInput());
+    // p2pkh.bindTxBuilder('unlock', async function (current, options, n) {
+    //     let changeAddress;
+    //     if (options.tokenChangeAddress) {
+    //         changeAddress = options.tokenChangeAddress;
+    //     } else {
+    //         changeAddress = await current.signer.getDefaultAddress();
+    //     }
+    //     const nexts = [];
+    //     const tx = new bsv.Transaction();
+    //     tx.addInput(current.buildContractInput());
 
-        const recipient = options.transfer;
-        if (recipient) {
-            if (!(recipient instanceof SmartContract)) {
-                throw new Error('Transfer option must be of type `SmartContract`.');
-            }
-            tx.addOutput(new bsv.Transaction.Output({ script: recipient.lockingScript, satoshis: 1 }));
-            nexts.push({ instance: recipient, balance: 1, atOutputIndex: nexts.length });
-        } else {
-            throw new Error('No NFTReceiver found!');
-        }
+    //     const recipient = options.transfer;
+    //     if (recipient) {
+    //         if (!(recipient instanceof SmartContract)) {
+    //             throw new Error('Transfer option must be of type `SmartContract`.');
+    //         }
+    //         tx.addOutput(new bsv.Transaction.Output({ script: recipient.lockingScript, satoshis: 1 }));
+    //         nexts.push({ instance: recipient, balance: 1, atOutputIndex: nexts.length });
+    //     } else {
+    //         throw new Error('No NFTReceiver found!');
+    //     }
 
-        const feePerKb = await current.provider?.getFeePerKb();
-        tx.feePerKb(feePerKb);
-        tx.change(changeAddress);
-        if (options.sequence !== undefined) {
-            tx.setInputSequence(0, options.sequence);
-        }
-        if (options.lockTime) {
-            const _sequence = options.sequence !== undefined ? options.sequence : 0xfffffffe;
-            tx.setInputSequence(0, _sequence);
-            tx.setLockTime(options.lockTime);
-        }
-        return Promise.resolve({ tx, atInputIndex: 0, nexts: nexts });
-    });
+    //     const feePerKb = await current.provider?.getFeePerKb();
+    //     tx.feePerKb(feePerKb);
+    //     tx.change(changeAddress);
+    //     if (options.sequence !== undefined) {
+    //         tx.setInputSequence(0, options.sequence);
+    //     }
+    //     if (options.lockTime) {
+    //         const _sequence = options.sequence !== undefined ? options.sequence : 0xfffffffe;
+    //         tx.setInputSequence(0, _sequence);
+    //         tx.setLockTime(options.lockTime);
+    //     }
+    //     return Promise.resolve({ tx, atInputIndex: 0, nexts: nexts });
+    // });
 
     const ctran = await p2pkh.methods.unlock(
         (sigResponses) => findSig(sigResponses, mintKey.toPublicKey()),
