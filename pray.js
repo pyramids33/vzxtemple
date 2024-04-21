@@ -55,7 +55,10 @@ async function startRun (mintAddress, message, config) {
             "thread": {
                 "messages": [
                     {"role":"user","content": message }
-                ]
+                ],
+                "tool_resources": {
+                    "file_search": { "vector_store_ids": ["vs_HwyXxCx93aHhXmxenie1TBMY"] }
+                }
             }
         })
     });
