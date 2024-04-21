@@ -53,7 +53,7 @@ async function (req, res) {
     const mintKey = await pray.getMintKey(mintAddress, config);
     const signer = new TestWallet(mintKey, new OrdiProvider(config.network));
     const balance = await signer.getBalance(mintAddress);
-    const funded = (balance.confirmed + balance.unconfirmed) > config.minOfferingSats;
+    const funded = (balance.confirmed + balance.unconfirmed) >= config.minOfferingSats;
     res.json({ balance: balance, funded, minimum: config.minOfferingSats });
 });
 
