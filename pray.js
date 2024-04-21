@@ -221,6 +221,7 @@ module.exports = {
     generateImage, 
     doRun, 
     saveRun, 
+    mintKeyPath,
     newMintKey, 
     getMintKey,
     mintOrdinal
