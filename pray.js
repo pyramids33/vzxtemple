@@ -160,8 +160,10 @@ async function mintOrdinal (mintKey, xferAddress, html, config) {
     const receiver = new OrdiNFTP2PKH(Addr(xferAddress.toByteString()));
 
     //
-    // Mostly copied from OrdinalNFT.getDefaultTxBuilder
-    // Just wanted to update the changeAddress
+    // Mostly copied from OrdinalNFT.getDefaultTxBuilder.
+    // Just wanted to update the changeAddress.
+    // But decided to just move the mint key and sweep it. 
+    // I'll think of someway to lock the mint key to the run so its single use. 
     //
     // p2pkh.bindTxBuilder('unlock', async function (current, options, n) {
     //     let changeAddress;
