@@ -3,7 +3,7 @@ const sharp = require('sharp');
 const path = require('path');
 const { readFile, writeFile } = require('fs/promises');
 
-const { bsv, TestWallet, Addr, findSig, PubKey } = require('scrypt-ts');
+const { bsv, TestWallet, Addr, findSig, PubKey, SmartContract } = require('scrypt-ts');
 
 const {
     ContentType,
