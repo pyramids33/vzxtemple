@@ -19,11 +19,8 @@ const config = JSON.parse(readFileSync(process.argv[2]));
 
 //convert from string to network
 config.network = bsv.Networks.get(config.network);
-config.changeKey = bsv.PrivateKey.fromWIF(config.changeKey.trim());
-config.changeAddress = config.changeKey.toAddress();
-
 console.log('network', config.network.name);
-console.log('change', config.changeAddress.toString());
+
 
 const app = express();
 
