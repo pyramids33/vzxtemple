@@ -48,7 +48,7 @@ async function startRun (mintAddress, message, config) {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer "+config.apikey,
-            "OpenAI-Beta": "assistants=v1"
+            "OpenAI-Beta": "assistants=v2"
         },
         body: JSON.stringify({
             "assistant_id": config.assistant_id,
@@ -74,7 +74,7 @@ async function pollRun (run, config) {
                 method: 'GET',
                 headers: {
                     "Authorization": "Bearer "+config.apikey,
-                    "OpenAI-Beta": "assistants=v1"
+                    "OpenAI-Beta": "assistants=v2"
                 }
             });
             run = await res.json();
@@ -86,7 +86,7 @@ async function pollRun (run, config) {
                 method: 'GET',
                 headers: {
                     "Authorization": "Bearer "+config.apikey,
-                    "OpenAI-Beta": "assistants=v1"
+                    "OpenAI-Beta": "assistants=v2"
                 }
             });
             const body = await res.json();
