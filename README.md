@@ -34,9 +34,6 @@ The first argument to app.js is a path to a json config file:
 
     // bsv network description
     "network": "mainnet",
-
-    // change from the mint address ends up here after a mint
-    "changeKey": "WIF private key for temple donations",
     
     // minimum amount for the offering. set it based on open ai costs
     "minOfferingSats": 10000,
@@ -50,3 +47,13 @@ The first argument to app.js is a path to a json config file:
 
 ![sshot1](sshot1.png "sshot1")  
 ![sshot2](sshot2.png "sshot2")
+
+
+### Todos
+
+- Add tool to sweep all the used mint keys
+- Lock mint key to run id
+- Replace TestWallet with something else
+- Better interface
+- Add other gods, for example Jesus or South American gods
+- Other things to do at the temple...

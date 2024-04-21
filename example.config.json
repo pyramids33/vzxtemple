@@ -4,7 +4,6 @@
     "vectorstore_id": "open ai vector_store_id",
     "datapath": "/path/for/datastorage",
     "network": "mainnet",
-    "changeKey":"WIF private key for temple donations",
     "minOfferingSats": 10000,
     "port": 3001
 }
