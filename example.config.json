@@ -1,6 +1,7 @@
 {
     "apikey":"open ai api key",
     "assistant_id":"open ai assistant id",
+    "vectorstore_id": "open ai vector_store_id",
     "datapath": "/path/for/datastorage",
     "network": "mainnet",
     "changeKey":"WIF private key for temple donations",

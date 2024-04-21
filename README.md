@@ -28,7 +28,7 @@ The first argument to app.js is a path to a json config file:
     // open ai configuration
     "apikey": "open ai api key",
     "assistant_id": "open ai assistant id",
-
+    "vectorstore_id" "open ai vector store id",
     // all data written into this directory
     "datapath": "/path/for/datastorage",
 
